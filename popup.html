@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+  <title>getLinks</title>
+</head>
+<body>
+  <h2>getLinks</h2>
+  <div id="step1">
+    <div class="input-group">
+      <label for="rootLink">Root Link:</label>
+      <input type="text" id="rootLink" placeholder="e.g. https://mega.nz">
+      <button id="findBtn">Find Links</button>
+    </div>
+  </div>
+  <div id="step2" style="display: none;">
+    <p class="result-text">Found <span id="count">0</span> links!</p>
+    <div class="button-group">
+      <button id="copyBtn">Copy to Clipboard</button>
+      <button id="downloadBtn">Download .txt</button>
+      <button id="resetBtn" class="secondary-btn">Start Over</button>
+    </div>
+  </div>
+  <p id="status"></p>
+  <script src="popup.js"></script>
+</body>
+</html>
