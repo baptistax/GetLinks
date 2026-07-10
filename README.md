@@ -34,15 +34,6 @@ Run the link-matching tests with Node.js:
 node --test tests/link-utils.test.js
 ```
 
-To regenerate the icon sizes from `icons/icon-source.png`:
 
-```text
-python generate_icons.py
-```
 
-## Before publishing
 
-- Add the publisher name, contact email, support URL, and homepage URL in `CHROMEWEBSTORE.md`.
-- Publish `PRIVACY.md` at a public URL and add that URL in the Chrome Web Store dashboard.
-- Create at least one required store screenshot at 1280 x 800 or 640 x 400.
-- Zip only the extension runtime files and icons; tests, source artwork, and store notes do not need to be included.
