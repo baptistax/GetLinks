@@ -1,28 +1,52 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="popup.css">
-  <title>getLinks</title>
+  <title>GetLinks</title>
 </head>
 <body>
-  <h2>getLinks</h2>
-  <div id="step1">
-    <div class="input-group">
-      <label for="rootLink">Root Link:</label>
-      <input type="text" id="rootLink" placeholder="e.g. https://mega.nz">
-      <button id="findBtn">Find Links</button>
-    </div>
-  </div>
-  <div id="step2" style="display: none;">
-    <p class="result-text">Found <span id="count">0</span> links!</p>
-    <div class="button-group">
-      <button id="copyBtn">Copy to Clipboard</button>
-      <button id="downloadBtn">Download .txt</button>
-      <button id="resetBtn" class="secondary-btn">Start Over</button>
-    </div>
-  </div>
-  <p id="status"></p>
+  <header class="brand">
+    <img src="icons/icon32.png" width="32" height="32" alt="">
+    <h1>GetLinks</h1>
+  </header>
+
+  <main>
+    <section id="step1">
+      <div class="input-group">
+        <label for="rootLink">Site or domain</label>
+        <input
+          type="text"
+          id="rootLink"
+          placeholder="https://example.com"
+          autocomplete="off"
+          autocapitalize="none"
+          spellcheck="false"
+        >
+        <p class="hint">Matches the domain and its subdomains, not text elsewhere in a URL.</p>
+        <p class="privacy-note">
+          By clicking <strong>Find links</strong>, you agree to a one-time scan of your open-tab URLs.
+          Everything stays on this device; nothing is stored or sent.
+        </p>
+        <button id="findBtn" type="button">Find links</button>
+      </div>
+    </section>
+
+    <section id="step2" hidden>
+      <p class="result-text">Found <strong id="count">0</strong> unique <span id="linkWord">links</span></p>
+      <textarea id="resultLinks" readonly aria-label="Matching links"></textarea>
+      <div class="button-group">
+        <button id="copyBtn" type="button">Copy links</button>
+        <button id="downloadBtn" type="button">Download .txt</button>
+        <button id="resetBtn" type="button" class="secondary-btn">Search again</button>
+      </div>
+    </section>
+
+    <p id="status" role="status" aria-live="polite"></p>
+  </main>
+
+  <script src="link-utils.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

@@ -1,120 +1,122 @@
-# Chrome Web Store Listing — getLinks
+# Chrome Web Store Listing — GetLinks
 
-> Last Updated: 2026-07-09
+> Last updated: 2026-07-10
 
-## Store Listing
+## Store listing
 
-**Extension Name** [REQUIRED]
-getLinks
+**Extension name** [REQUIRED]
 
+GetLinks
 
-**Short Description** [REQUIRED]
-Extracts and downloads specific links from all your open browser tabs in one click.
+**Short description** [REQUIRED]
 
+Collect, review, copy, or download unique links from open tabs for a site you choose.
 
-**Detailed Description** [REQUIRED]
-getLinks is a simple yet powerful productivity tool designed to help you organize and extract URLs from across all your open browser tabs.
+**Detailed description** [REQUIRED]
 
-Have dozens of tabs open and need to collect all links from a specific domain (like mega.nz, google.com, or any other site)? Instead of manually clicking through every tab, getLinks does the work for you in seconds.
+GetLinks is a focused productivity tool for collecting URLs from your open Chrome tabs.
+
+Have several tabs open for the same site and need one clean list? Enter a domain, and GetLinks finds the matching tabs, removes identical URLs, and lets you review the results before copying them or downloading a `.txt` file.
 
 How to use it:
-1. Click the getLinks extension icon in your browser toolbar.
-2. Enter the root link or domain you want to find (e.g., "https://mega.nz").
-3. Click "Find Links".
-4. The extension instantly scans all your open tabs and shows you how many matches were found.
-5. Choose to copy all found links to your clipboard, or download them directly as a .txt file.
 
-Privacy Note: getLinks only reads the URLs of your currently open tabs at the moment you click "Find Links". We do not collect, transmit, or store your browsing history or any personal data.
+1. Click the GetLinks icon in the browser toolbar.
+2. Enter a domain or URL, such as `https://example.com`.
+3. Click **Find links**.
+4. Review the unique matching URLs.
+5. Copy the list to the clipboard or download it as a text file.
 
-Support/Feedback: If you have any issues or suggestions, please contact the developer.
+Matching is based on the actual site hostname. Entering `example.com` matches that domain and its subdomains, but does not match unrelated domains that merely contain the same text.
 
+Privacy disclosure: When the user clicks **Find links**, GetLinks reads the URLs of currently open tabs only to provide the requested matching results. All processing happens locally. URLs and search input are not transmitted, stored, sold, or shared.
 
 **Category** [REQUIRED]
+
 Productivity
 
+**Single purpose** [REQUIRED]
 
-**Single Purpose** [REQUIRED]
-Extracts and copies/downloads URLs matching a specific root link from all open tabs.
+Finds and deduplicates URLs from currently open tabs whose hostname matches a site chosen by the user, then lets the user review, copy, or download the results.
 
+**Primary language** [REQUIRED]
 
-**Primary Language** [REQUIRED]
 English
 
-
-## Graphics & Assets
+## Graphics and assets
 
 | Asset | Dimensions | Status | Filename |
-|-------|-----------|--------|----------|
-| Store Icon [REQUIRED] | 128×128 PNG | ⬜ Not created | |
-| Screenshot 1 [REQUIRED] | 1280×800 or 640×400 | ⬜ Not created | |
-| Screenshot 2 [RECOMMENDED] | 1280×800 or 640×400 | ⬜ Not created | |
-| Screenshot 3 [RECOMMENDED] | 1280×800 or 640×400 | ⬜ Not created | |
-| Screenshot 4 | 1280×800 or 640×400 | ⬜ Not created | |
-| Screenshot 5 | 1280×800 or 640×400 | ⬜ Not created | |
-| Small Promo Tile [RECOMMENDED] | 440×280 | ⬜ Not created | |
-| Marquee Promo Tile | 1400×560 | ⬜ Not created | |
+|---|---:|---|---|
+| Store icon [REQUIRED] | 128 x 128 PNG | Ready | `icons/icon128.png` |
+| Screenshot 1 [REQUIRED] | 1280 x 800 or 640 x 400 | Not created | |
+| Screenshot 2 [RECOMMENDED] | 1280 x 800 or 640 x 400 | Not created | |
+| Small promo tile [RECOMMENDED] | 440 x 280 | Not created | |
+| Marquee promo tile | 1400 x 560 | Not created | |
 
-### Screenshot Notes
-- Screenshot 1: The extension popup open with the "Root Link" input field visible.
-- Screenshot 2: The extension showing the results screen after finding links, with "Download .txt" and "Copy to Clipboard" buttons.
+Suggested screenshots:
 
+- Popup with the site input, example placeholder, and privacy disclosure visible.
+- Results view showing deduplicated links and the copy/download actions.
 
-## Permissions Justification
+## Permission justifications
 
-| Permission | Type | Justification |
-|------------|------|---------------|
-| tabs | permissions | Needed to read the URLs of the user's currently open tabs in order to search for and extract the matching root links. |
-| downloads | permissions | Needed to allow the user to save the extracted links directly as a local .txt file on their device. |
+| Permission | Justification |
+|---|---|
+| `tabs` | Reads the URLs of currently open tabs only after the user clicks **Find links**, so the extension can find URLs for the chosen site. |
+| `clipboardWrite` | Writes the displayed matching URLs to the clipboard only after the user clicks **Copy links**. |
 
+No host permissions are requested. The extension does not inject scripts into websites. The `.txt` file uses a user-initiated browser download, so the `downloads` permission is not requested.
 
-## Privacy & Data Use
+## Privacy practices
 
-### Data Collection
+GetLinks handles **web browsing activity** (the URLs of open tabs) locally for its single user-facing purpose.
 
-**Does the extension collect user data?** No
+- Data use: app functionality only.
+- Data transmission: none.
+- Persistent storage: none.
+- Selling or sharing: none.
+- Advertising, analytics, or creditworthiness use: none.
+- Human access to user data: none.
 
-### Data Use Certification
-- [x] Data is NOT sold to third parties
-- [x] Data is NOT used for purposes unrelated to the extension's core functionality
-- [x] Data is NOT used for creditworthiness or lending purposes
+Do not state that the extension handles no user data: the Chrome Web Store classifies domains and URLs as web browsing activity even when they are processed locally. Keep the dashboard disclosure, this listing, the popup disclosure, and `PRIVACY.md` consistent.
 
+**Privacy policy URL** [REQUIRED]
 
-## Privacy Policy
-
-**Privacy Policy URL** [REQUIRED if collecting data, RECOMMENDED otherwise]
-[To be added by developer]
-
+[Publish `PRIVACY.md` at a public URL and add it here]
 
 ## Distribution
 
-**Visibility**: Public
-**Regions**: All regions
-**Pricing**: Free
+**Visibility:** Public
 
+**Regions:** All regions
 
-## Developer Info
+**Pricing:** Free
 
-**Publisher Name** [REQUIRED]
-[Your Name]
+## Developer information
 
-**Contact Email** [REQUIRED]
-[Your Email]
+**Publisher name** [REQUIRED]
 
-**Support URL / Email** [RECOMMENDED]
-[Your GitHub or Email]
+[Your name]
+
+**Contact email** [REQUIRED]
+
+[Your email]
+
+**Support URL or email** [RECOMMENDED]
+
+[Your GitHub repository or support email]
 
 **Homepage URL** [RECOMMENDED]
-[Your Website]
 
+[Your website or public repository]
 
-## Version History
+## Version history
 
 | Version | Date | Changes | Status |
-|---------|------|---------|--------|
-| 1.0.0 | 2026-07-09 | Initial release | Draft |
+|---|---|---|---|
+| 1.0.0 | 2026-07-10 | Initial reviewed release | Draft |
 
+## Known limitations
 
-## Review Notes
-
-### Known Issues / Limitations
-None at the moment.
+- Only currently open HTTP and HTTPS tabs are scanned.
+- Identical canonical URLs are deduplicated. URLs with different paths, queries, or fragments remain separate.
+- Incognito tabs are included only if the user separately allows the extension in Incognito mode.

@@ -1,86 +1,109 @@
+'use strict';
+
 let foundLinks = [];
+let matchedHostname = '';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const findBtn = document.getElementById('findBtn');
-  const copyBtn = document.getElementById('copyBtn');
-  const downloadBtn = document.getElementById('downloadBtn');
-  const resetBtn = document.getElementById('resetBtn');
-  
-  findBtn.addEventListener('click', findLinks);
-  copyBtn.addEventListener('click', copyLinks);
-  downloadBtn.addEventListener('click', downloadLinks);
-  resetBtn.addEventListener('click', resetView);
+  const rootInput = document.getElementById('rootLink');
+
+  document.getElementById('findBtn').addEventListener('click', findLinks);
+  document.getElementById('copyBtn').addEventListener('click', copyLinks);
+  document.getElementById('downloadBtn').addEventListener('click', downloadLinks);
+  document.getElementById('resetBtn').addEventListener('click', resetView);
+  rootInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      findLinks();
+    }
+  });
+
+  rootInput.focus();
 });
 
 async function findLinks() {
-  const rootLink = document.getElementById('rootLink').value.trim();
-  const statusEl = document.getElementById('status');
-  
-  if (!rootLink) {
-    statusEl.textContent = 'Please enter a valid link.';
-    return;
-  }
-  
-  statusEl.textContent = 'Searching...';
-  
+  const rootInput = document.getElementById('rootLink');
+  const findButton = document.getElementById('findBtn');
+
+  setStatus('Searching open tabs...');
+  findButton.disabled = true;
+
   try {
     const tabs = await chrome.tabs.query({});
-    foundLinks = tabs
-      .map(tab => tab.url)
-      .filter(url => url && url.includes(rootLink));
-      
-    if (foundLinks.length > 0) {
-      document.getElementById('step1').style.display = 'none';
-      document.getElementById('step2').style.display = 'block';
-      document.getElementById('count').textContent = foundLinks.length;
-      statusEl.textContent = '';
+    const result = GetLinksUtils.collectMatchingLinks(tabs, rootInput.value);
+
+    foundLinks = result.links;
+    matchedHostname = result.hostname;
+
+    if (foundLinks.length === 0) {
+      setStatus(`No open tabs found for ${matchedHostname}.`, 'error');
+      return;
+    }
+
+    document.getElementById('count').textContent = foundLinks.length;
+    document.getElementById('linkWord').textContent = foundLinks.length === 1 ? 'link' : 'links';
+    document.getElementById('resultLinks').value = foundLinks.join('\n');
+    document.getElementById('step1').hidden = true;
+    document.getElementById('step2').hidden = false;
+
+    if (result.duplicateCount > 0) {
+      const tabWord = result.duplicateCount === 1 ? 'tab' : 'tabs';
+      setStatus(`${result.duplicateCount} duplicate ${tabWord} omitted.`, 'success');
     } else {
-      statusEl.textContent = 'No links found.';
+      setStatus(`Showing links from ${matchedHostname}.`, 'success');
     }
   } catch (error) {
-    statusEl.textContent = 'Error querying tabs: ' + error.message;
+    const message = error instanceof Error ? error.message : 'Unexpected error.';
+    setStatus(message, 'error');
+  } finally {
+    findButton.disabled = false;
   }
 }
 
 async function copyLinks() {
-  const text = foundLinks.join('\n');
+  if (foundLinks.length === 0) {
+    return;
+  }
+
   try {
-    await navigator.clipboard.writeText(text);
-    document.getElementById('status').textContent = 'Copied to clipboard!';
-  } catch (err) {
-    document.getElementById('status').textContent = 'Failed to copy.';
+    await navigator.clipboard.writeText(foundLinks.join('\n'));
+    setStatus('Links copied to the clipboard.', 'success');
+  } catch {
+    setStatus('Chrome could not copy the links.', 'error');
   }
 }
 
 function downloadLinks() {
-  const text = foundLinks.join('\n');
-  const blob = new Blob([text], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  
-  if (chrome.downloads && chrome.downloads.download) {
-    chrome.downloads.download({
-      url: url,
-      filename: 'links.txt',
-      saveAs: true
-    }, () => {
-      document.getElementById('status').textContent = 'Download started!';
-    });
-  } else {
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'links.txt';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    document.getElementById('status').textContent = 'Download started!';
+  if (foundLinks.length === 0) {
+    return;
   }
+
+  const text = `${foundLinks.join('\n')}\n`;
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const objectUrl = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  const safeHostname = matchedHostname.replace(/[^a-z0-9.-]+/gi, '-');
+
+  anchor.href = objectUrl;
+  anchor.download = `getlinks-${safeHostname}.txt`;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+
+  setStatus('Text file downloaded.', 'success');
 }
 
 function resetView() {
   foundLinks = [];
-  document.getElementById('step1').style.display = 'block';
-  document.getElementById('step2').style.display = 'none';
-  document.getElementById('rootLink').value = '';
-  document.getElementById('status').textContent = '';
+  matchedHostname = '';
+  document.getElementById('step1').hidden = false;
+  document.getElementById('step2').hidden = true;
+  document.getElementById('resultLinks').value = '';
+  setStatus('');
+  document.getElementById('rootLink').select();
+}
+
+function setStatus(message, tone = '') {
+  const status = document.getElementById('status');
+  status.textContent = message;
+  status.dataset.tone = tone;
 }

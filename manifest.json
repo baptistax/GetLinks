@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "getLinks",
-  "version": "1.0",
-  "description": "Finds and extracts links from open tabs based on a root URL.",
-  "permissions": ["tabs", "downloads"],
+  "name": "GetLinks",
+  "version": "1.0.0",
+  "description": "Collects unique links from open tabs that belong to a site you choose.",
+  "permissions": ["tabs", "clipboardWrite"],
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
@@ -11,6 +11,7 @@
     "128": "icons/icon128.png"
   },
   "action": {
+    "default_title": "GetLinks",
     "default_popup": "popup.html"
   }
 }

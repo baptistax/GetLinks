@@ -1,31 +1,44 @@
-import os
-from PIL import Image, ImageDraw, ImageFont
+from pathlib import Path
 
-def generate_icon(size, output_path):
-    # Create a gradient background
-    img = Image.new('RGB', (size, size), color=(15, 23, 42))
-    draw = ImageDraw.Draw(img)
-    
-    # Draw a simple stylized 'G' and 'L' for getLinks
-    # Since we can't guarantee font, we'll draw simple geometric shapes
-    # representing a chain link.
-    padding = size * 0.2
-    thickness = max(1, int(size * 0.1))
-    
-    # Draw top left oval
-    draw.ellipse(
-        [padding, padding, size - padding, size - padding], 
-        outline=(59, 130, 246), # primary color
-        width=thickness
+from PIL import Image, ImageDraw
+
+
+ROOT = Path(__file__).resolve().parent
+ICONS_DIR = ROOT / "icons"
+SOURCE_PATH = ICONS_DIR / "icon-source.png"
+SIZES = (16, 32, 48, 128)
+
+
+def prepare_source() -> Image.Image:
+    source = Image.open(SOURCE_PATH).convert("RGBA")
+    side = min(source.size)
+    left = (source.width - side) // 2
+    top = (source.height - side) // 2
+    source = source.crop((left, top, left + side, top + side))
+
+    mask = Image.new("L", source.size, 0)
+    draw = ImageDraw.Draw(mask)
+    draw.rounded_rectangle(
+        (0, 0, side - 1, side - 1),
+        radius=round(side * 0.18),
+        fill=255,
     )
-    
-    img.save(output_path)
+    source.putalpha(mask)
+    return source
+
+
+def generate_icon(source: Image.Image, size: int) -> None:
+    icon = source.resize((size, size), Image.Resampling.LANCZOS)
+    icon.save(ICONS_DIR / f"icon{size}.png", optimize=True)
+
 
 if __name__ == "__main__":
-    icons_dir = os.path.join(os.path.dirname(__file__), "icons")
-    os.makedirs(icons_dir, exist_ok=True)
-    
-    for size in [16, 32, 48, 128]:
-        generate_icon(size, os.path.join(icons_dir, f"icon{size}.png"))
-    
-    print("Icons generated successfully!")
+    if not SOURCE_PATH.exists():
+        raise SystemExit(f"Missing icon source: {SOURCE_PATH}")
+
+    ICONS_DIR.mkdir(exist_ok=True)
+    prepared_source = prepare_source()
+    for icon_size in SIZES:
+        generate_icon(prepared_source, icon_size)
+
+    print("GetLinks icons generated successfully.")
