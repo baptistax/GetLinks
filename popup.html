@@ -8,45 +8,87 @@
 </head>
 <body>
   <header class="brand">
+    <button id="backBtn" class="icon-button" aria-label="Back to results" hidden><svg aria-hidden="true"><use href="icons/ui.svg#back"/></svg></button>
     <img src="icons/icon32.png" width="32" height="32" alt="">
     <h1>GetLinks</h1>
+    <button id="settingsBtn" class="icon-button" aria-label="Settings"><svg aria-hidden="true"><use href="icons/ui.svg#settings"/></svg></button>
   </header>
-
-  <main>
-    <section id="step1">
-      <div class="input-group">
-        <label for="rootLink">Site or domain</label>
-        <input
-          type="text"
-          id="rootLink"
-          placeholder="https://example.com"
-          autocomplete="off"
-          autocapitalize="none"
-          spellcheck="false"
-        >
-        <p class="hint">Matches the domain and its subdomains, not text elsewhere in a URL.</p>
-        <p class="privacy-note">
-          By clicking <strong>Find links</strong>, you agree to a one-time scan of your open-tab URLs.
-          Everything stays on this device; nothing is stored or sent.
-        </p>
-        <button id="findBtn" type="button">Find links</button>
+  <main id="workspace">
+    <form id="searchForm" class="search-field">
+      <svg aria-hidden="true"><use href="icons/ui.svg#search"/></svg>
+      <input id="rootLink" aria-label="Site or domain" placeholder="Site or domain" autocomplete="off" autocapitalize="none" spellcheck="false">
+      <button id="findBtn" class="search-button" type="submit" aria-label="Search" title="Search"><svg aria-hidden="true"><use href="icons/ui.svg#search"/></svg></button>
+    </form>
+    <div id="resultControls" hidden>
+      <div class="segmented" role="tablist" aria-label="Result scope">
+        <button id="linksTab" role="tab" aria-selected="true" aria-controls="results">Links</button>
+        <button id="tabsTab" role="tab" aria-selected="false" aria-controls="results" tabindex="-1">Tabs</button>
       </div>
-    </section>
-
-    <section id="step2" hidden>
-      <p class="result-text">Found <strong id="count">0</strong> unique <span id="linkWord">links</span></p>
-      <textarea id="resultLinks" readonly aria-label="Matching links"></textarea>
-      <div class="button-group">
-        <button id="copyBtn" type="button">Copy links</button>
-        <button id="downloadBtn" type="button">Download .txt</button>
-        <button id="resetBtn" type="button" class="secondary-btn">Search again</button>
+      <p id="summary" class="summary"></p>
+      <input id="linkFilter" class="filter-field" type="search" aria-label="Filter links by URL, title or hostname" placeholder="Filter links…" hidden>
+      <div class="result-tools">
+        <button id="selectAllBtn" class="small-button">Select all</button>
+        <button id="clearBtn" class="small-button">Clear</button>
+        <label id="duplicatesControl" class="duplicate-control"><input id="duplicatesOnly" type="checkbox" role="switch"><span>Only duplicates</span></label>
+        <label id="windowControl" class="window-control" hidden><select id="windowFilter" aria-label="Filter matching tabs by window"><option value="all">Window: All</option></select></label>
       </div>
+    </div>
+    <section id="results" class="results" aria-label="Search results">
+      <div id="emptyState" class="empty-state">
+        <img src="icons/icon48.png" width="48" height="48" alt="">
+        <h2>Your links, in one place.</h2>
+        <p>Search a site to review its open links<br>and manage the matching tabs.</p>
+        <p class="privacy-note">Matches the site and its subdomains.<br>Processed on your device. Only preferences are saved.</p>
+      </div>
+      <ul id="resultList" aria-label="Matching links" hidden></ul>
     </section>
-
-    <p id="status" role="status" aria-live="polite"></p>
   </main>
-
+  <section id="settingsPanel" aria-labelledby="settingsTitle" hidden>
+    <h2 id="settingsTitle" tabindex="-1">Settings</h2>
+    <fieldset class="settings-group">
+      <legend>Display</legend>
+      <div class="segmented display-options">
+        <label><input type="radio" name="displayMode" value="compact" checked><span>Compact</span></label>
+        <label><input type="radio" name="displayMode" value="detailed"><span>Detailed</span></label>
+      </div>
+      <p>Choose how you review unique links.</p>
+    </fieldset>
+    <fieldset class="settings-group">
+      <legend>Results</legend>
+      <label class="setting-toggle"><span>Enable link filter<small>Filter by title, hostname or URL.</small></span><input id="linkFilterEnabled" type="checkbox" role="switch"></label>
+    </fieldset>
+    <fieldset class="settings-group">
+      <legend>Tab management</legend>
+      <label class="setting-toggle"><span>Confirm close tabs<small>Ask before closing any matching tabs.</small></span><input id="confirmCloseTabs" type="checkbox" role="switch" checked></label>
+    </fieldset>
+    <p class="settings-privacy">Preferences are saved on this device.<br>Searches and selections aren't saved.</p>
+  </section>
+  <p id="status" role="status" aria-live="polite" aria-atomic="true"></p>
+  <footer id="actionBar" hidden>
+    <span id="selectionCount">0 selected</span>
+    <div id="linkActions" class="footer-actions">
+      <button id="copyBtn" class="primary" disabled><svg aria-hidden="true"><use href="icons/ui.svg#copy"/></svg>Copy</button>
+      <button id="linkMoreBtn" aria-label="More link actions" aria-haspopup="menu" aria-expanded="false" disabled><svg aria-hidden="true"><use href="icons/ui.svg#more"/></svg>More</button>
+    </div>
+    <div id="tabActions" class="footer-actions" hidden>
+      <button id="muteBtn" disabled><svg aria-hidden="true"><use href="icons/ui.svg#volume"/></svg><span>Mute</span></button>
+      <button id="reloadBtn" disabled><svg aria-hidden="true"><use href="icons/ui.svg#reload"/></svg>Reload</button>
+      <button id="tabMoreBtn" class="icon-button" aria-label="More tab actions" aria-haspopup="menu" aria-expanded="false" disabled><svg aria-hidden="true"><use href="icons/ui.svg#more"/></svg></button>
+    </div>
+  </footer>
+  <footer id="settingsFooter" hidden><svg aria-hidden="true"><use href="icons/ui.svg#check"/></svg><span id="saveStatus" role="status">Saved automatically</span></footer>
+  <div id="menu" class="menu" role="menu" hidden></div>
+  <dialog id="closeDialog" aria-labelledby="closeTitle" aria-describedby="closeDescription">
+    <h2 id="closeTitle"></h2><p id="closeDescription"></p>
+    <form method="dialog" class="dialog-actions">
+      <button value="cancel" autofocus>Cancel</button>
+      <button value="close" class="danger-button">Close tabs</button>
+    </form>
+  </dialog>
   <script src="link-utils.js"></script>
+  <script src="settings.js"></script>
+  <script src="tab-actions.js"></script>
+  <script src="popup-view.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>
